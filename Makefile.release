@@ -60,8 +60,9 @@ precompiled/linux-x86.lib:
 	make arch=i386
 	cp build/Default-i386/$(Default_LIBNAME) precompiled/linux-x86.lib
 
-build/linux-amd64.lib:
-	git push debian64:repo/sqlitejdbc
-	ssh debian64 "cd repo/sqlitejdbc && make arch=amd64 test"
-	scp debian64:repo/sqlitejdbc/build/Default-amd64/$(Default_LIBNAME) $@
-
+build/linux-amd64.lib: precompiled/linux-amd64.lib
+	cp precompiled/linux-amd64.lib build/linux-amd64.lib
+	
+precompiled/linux-amd64.lib:
+	make arch=amd64
+	cp build/Default-amd64/$(Default_LIBNAME) precompiled/linux-amd64.lib
