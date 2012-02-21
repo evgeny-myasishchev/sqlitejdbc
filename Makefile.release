@@ -53,10 +53,12 @@ precompiled/win-x86.lib:
 	make os=Win arch=i586 native
 	cp build/Win-i586/$(Win_LIBNAME) precompiled/win-x86.lib
 
-build/linux-x86.lib:
-	git push debian:repo/sqlitejdbc
-	ssh debian "cd repo/sqlitejdbc && make arch=i386 test"
-	scp debian:repo/sqlitejdbc/build/Default-i386/$(Default_LIBNAME) $@
+build/linux-x86.lib: precompiled/linux-x86.lib
+	cp precompiled/linux-x86.lib build/linux-x86.lib
+
+precompiled/linux-x86.lib:
+	make arch=i386
+	cp build/Default-i386/$(Default_LIBNAME) precompiled/linux-x86.lib
 
 build/linux-amd64.lib:
 	git push debian64:repo/sqlitejdbc
