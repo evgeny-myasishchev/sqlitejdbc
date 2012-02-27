@@ -35,7 +35,7 @@ build/$(target)/$(LIBNAME): build/$(sqlite)-$(target)/sqlite3.o build/org/sqlite
 	$(CC) $(CFLAGS) -c -o build/$(target)/NativeDB.o \
 		src/org/sqlite/NativeDB.c
 	$(CC) $(CFLAGS) $(LINKFLAGS) -o build/$(target)/$(LIBNAME) \
-		build/$(target)/NativeDB.o build/$(sqlite)-$(target)/sqlite-amalgamation-$(sqlite_version) /*.o
+		build/$(target)/NativeDB.o build/$(sqlite)-$(target)/sqlite-amalgamation-$(sqlite_version)/*.o
 	$(STRIP) build/$(target)/$(LIBNAME)
 
 build/$(sqlite)-%/sqlite3.o: dl/$(sqlite)-amal.zip
