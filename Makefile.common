@@ -1,9 +1,6 @@
-ifndef JAVA_HOME
-$(error Set JAVA_HOME environment variable)
-endif
-
 ifeq ($(os),)
 	ifeq ($(shell uname),Darwin)
+		JAVA_HOME := /System/Library/Frameworks/JavaVM.framework/Home
 		os := Darwin
 	endif
 	ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN)
@@ -15,6 +12,10 @@ ifeq ($(os),)
 endif
 ifeq ($(os),)
 	os := Default
+endif
+
+ifndef JAVA_HOME
+$(error Set JAVA_HOME environment variable)
 endif
 
 # Windows uses different path separators, because they hate me
@@ -33,7 +34,12 @@ sqlite := sqlite-$(sqlite_version)
 
 sqlitejdbc := sqlitejdbc-v$(shell cat VERSION)
 
-jni_md := $(shell find -L "$(JAVA_HOME)/include" -name jni_md.h)
+ifeq ($(os),Darwin)
+	jni_md := $(shell find -L "`javaconfig Headers`" -name jni_md.h)
+else
+	jni_md := $(shell find -L "$(JAVA_HOME)/include" -name jni_md.h)
+endif
+
 ifneq ($(jni_md),)
 jni_include := $(shell dirname "$(jni_md)")
 endif
@@ -41,9 +47,9 @@ endif
 libjdbc  := $(wildcard lib/jdbc-*.jar)
 libjunit := $(wildcard lib/junit-*.jar)
 
-JAVA  := $$JAVA_HOME/bin/java
-JAVAC := $$JAVA_HOME/bin/javac -Xbootclasspath/p:$(libjdbc)
-JAVAH := $$JAVA_HOME/bin/javah
+JAVA  := $(JAVA_HOME)/bin/java
+JAVAC := $(JAVA_HOME)/bin/javac -Xbootclasspath/p:$(libjdbc)
+JAVAH := $(JAVA_HOME)/bin/javah
 
 java_sources = $(wildcard src/org/sqlite/*.java)
 java_classes = $(java_sources:src/%.java=build/%.class)
@@ -58,14 +64,14 @@ target     := $(os)-$(arch)
 # os=Default is meant to be generic unix/linux
 Default_CC        := gcc
 Default_STRIP     := strip
-Default_CFLAGS    := -I$(JAVA_HOME)/include -Os -fPIC
+Default_CFLAGS    := -I$(jni_include) -Os -fPIC
 Default_LINKFLAGS := -shared
 Default_LIBNAME   := libsqlitejdbc.so
 
 Darwin_CC        := gcc -arch $(arch)
 Darwin_STRIP     := strip -x
-Darwin_CFLAGS    := -I$(JAVA_HOME)/../Headers -Os -fPIC
-Darwin_LINKFLAGS := -dynamiclib $(Support10_4)
+Darwin_CFLAGS    := -Os -fPIC
+Darwin_LINKFLAGS := -dynamiclib
 Darwin_LIBNAME   := libsqlitejdbc.jnilib
 
 Win_CC           := $(arch)-mingw32msvc-gcc
