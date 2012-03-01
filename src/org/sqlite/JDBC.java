@@ -21,7 +21,7 @@ import java.util.*;
 
 public class JDBC implements Driver
 {
-    private static final String PREFIX = "jdbc:sqlite:";
+    public static final String PREFIX = "jdbc:sqlite:";
 
     static {
         try {
