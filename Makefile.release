@@ -9,10 +9,13 @@ files  		:= $(afsdir)/files/sqlitejdbc
 
 default: dist/$(sqlitejdbc).jar
 
-dist/$(sqlitejdbc).jar: build/mac-universal.lib
+dist/$(sqlitejdbc).jar: $(sqlitejdbc)-native.jar build/mac-universal.lib
 	(cd build; jar uf $(sqlitejdbc)-native.jar *.lib)
 	cp build/$(sqlitejdbc)-native.jar $@
 	rm build/$(sqlitejdbc)-native.jar
+	
+$(sqlitejdbc)-native.jar:
+	$(MAKE) build/$(sqlitejdbc)-native.jar
 	
 # dist/$(sqlitejdbc).jar: build/mac-universal.lib build/win-x86.lib build/linux-x86.lib build/linux-amd64.lib dist/$(sqlitejdbc)-pure.jar
 # 	cp dist/$(sqlitejdbc)-pure.jar build/$(sqlitejdbc).jar
@@ -31,8 +34,12 @@ dist/$(sqlitejdbc)-bin.tgz: dist/$(sqlitejdbc).jar
 	cd build; tar cfz ../$@ $(sqlitejdbc)-native.jar \
 	    libsqlitejdbc.jnilib sqlitejdbc.dll libsqlitejdbc.so \
 
-build/mac-universal.lib:
-	@mkdir -p dist build/Darwin-universal
+build/mac-universal.lib: precompiled/mac-universal.lib
+	@mkdir -p dist build
+	cp precompiled/mac-universal.lib build/mac-universal.lib
+
+precompiled/mac-universal.lib:
+	@mkdir -p dist build/Darwin-universal precompiled
 	$(MAKE) os=Darwin arch=i386 native
 	$(MAKE) os=Darwin arch=x86_64 native
 	lipo -create build/Darwin-i386/$(Darwin_LIBNAME) \
