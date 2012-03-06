@@ -43,10 +43,14 @@ ifeq ($(os),Darwin)
 	jni_md := $(shell find -L "`javaconfig Headers`" -name jni_md.h)
 else
 	jni_md := $(shell find -L "$(JAVA_HOME)/include" -name jni_md.h)
+	jni_h := $(shell find -L "$(JAVA_HOME)/include" -name jni.h)
 endif
 
 ifneq ($(jni_md),)
-jni_include := $(shell dirname "$(jni_md)")
+jni_md_include := $(shell dirname "$(jni_md)")
+endif
+ifneq ($(jni_h),)
+jni_h_include := $(shell dirname "$(jni_h)")
 endif
 
 libjdbc  := $(wildcard lib/jdbc-*.jar)
@@ -70,7 +74,7 @@ target     := $(os)-$(arch)
 # os=Default is meant to be generic unix/linux
 Default_CC        := gcc
 Default_STRIP     := strip
-Default_CFLAGS    := -I$(jni_include) -Os -fPIC
+Default_CFLAGS    := -I$(jni_md_include) -I$(jni_h_include) -Os -fPIC
 Default_LINKFLAGS := -shared
 Default_LIBNAME   := libsqlitejdbc.so
 
@@ -80,8 +84,8 @@ Darwin_CFLAGS    := -Os -fPIC
 Darwin_LINKFLAGS := -dynamiclib
 Darwin_LIBNAME   := libsqlitejdbc.jnilib
 
-Win_CC           := $(arch)-mingw32msvc-gcc
-Win_STRIP        := $(arch)-mingw32msvc-strip
+Win_CC           := gcc
+Win_STRIP        := strip
 Win_CFLAGS       := -D_JNI_IMPLEMENTATION_ -Ilib/inc_win -O
 Win_LINKFLAGS    := -Wl,--kill-at -shared
 Win_LIBNAME      := sqlitejdbc.dll
@@ -92,7 +96,10 @@ CFLAGS    := $($(os)_CFLAGS)
 LINKFLAGS := $($(os)_LINKFLAGS)
 LIBNAME   := $($(os)_LIBNAME)
 
-CFLAGS := $(CFLAGS) -Ibuild/$(sqlite)-$(target) -Ibuild
-ifneq ($(jni_include),)
-CFLAGS := $(CFLAGS) -I$(jni_include)
+CFLAGS := $(CFLAGS) -Ibuild/$(sqlite)-$(target)/sqlite-amalgamation-$(sqlite_version) -Ibuild
+ifneq ($(jni_md_include),)
+CFLAGS := $(CFLAGS) -I$(jni_md_include)
+endif
+ifneq ($(jni_h_include),)
+CFLAGS := $(CFLAGS) -I$(jni_h_include)
 endif
