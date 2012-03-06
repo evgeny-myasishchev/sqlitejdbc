@@ -55,6 +55,7 @@ libjunit := $(wildcard lib/junit-*.jar)
 JAVA  := $(JAVA_HOME)/bin/java
 JAVAC := $(JAVA_HOME)/bin/javac -Xbootclasspath/p:$(libjdbc)
 JAVAH := $(JAVA_HOME)/bin/javah
+JAR   := $(JAVA_HOME)/bin/jar
 
 java_sources = $(wildcard src/org/sqlite/*.java)
 java_classes = $(java_sources:src/%.java=build/%.class)
