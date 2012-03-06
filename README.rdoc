@@ -1,0 +1,23 @@
+= SQLite3 JDBC driver
+
+The driver uses native SQLite3 libs.
+
+Supported platforms: Darwin (universal), Win32
+
+== Preparations to build native libs in Windows 
+
+Make sure msys and MinGW are installed. Native libs are compiled using MinGW build-tools.
+
+Make sure you have JDK installed. Install it to a folder without spaces (like c:\java).
+
+In msys bash set JAVA_HOME environment variable that points to the JDK. Sample:
+    export JAVA_HOME=c:/java/jdk1.6.0_25
+    
+Make sure curl is installed. It can be downloaded from: http://curl.haxx.se/download.html 
+
+Make sure unzip is installed.
+
+== Building
+
+Build procedure consists from several steps. First native jni library needs to be prepared
+

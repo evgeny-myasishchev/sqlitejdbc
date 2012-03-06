@@ -46,10 +46,12 @@ precompiled/mac-universal.lib:
 	             build/Darwin-x86_64/$(Darwin_LIBNAME) \
 	     -output $@
 
-build/win-x86.lib:
-	git push debian:repo/sqlitejdbc
-	ssh debian "cd repo/sqlitejdbc && make os=Win arch=i586 native"
-	scp debian:repo/sqlitejdbc/build/Win-i586/$(Win_LIBNAME) $@
+build/win-x86.lib: precompiled/win-x86.lib
+	cp precompiled/win-x86.lib build/win-x86.lib
+
+precompiled/win-x86.lib:
+	make os=Win arch=i586 native
+	cp build/Win-i586/$(Win_LIBNAME) precompiled/win-x86.lib
 
 build/linux-x86.lib:
 	git push debian:repo/sqlitejdbc
