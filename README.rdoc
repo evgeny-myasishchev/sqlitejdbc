@@ -19,5 +19,29 @@ Make sure unzip is installed.
 
 == Building
 
-Build procedure consists from several steps. First native jni library needs to be prepared
+Build procedure consists from several steps. First native jni library needs to be precompiled for each platform.
+After precompiled libs are ready jar can be prepared.
 
+=== Preparing precompiled libs
+
+Note: If used SQLite version has not changed then native libs preparation can be skipped. They are already in ./precompiled folder.
+
+Under Windows (32 bit) (see windows preparation notes before)
+	make -f Makefile.release precompiled/win-x86.lib
+
+Under Linux (32 bit)
+	make -f Makefile.release precompiled/linux-x86.lib
+
+Under Linux (amd64)
+	make -f Makefile.release precompiled/linux-amd64.lib
+
+Under OSX
+	make -f Makefile.release precompiled/mac-universal.lib
+
+=== Creating jar
+
+make -f Makefile.release
+
+This will create ./dist/sqlitejdbc-vX.X.X.jar
+
+X.X.X - corresponds to a version of SQLite used.

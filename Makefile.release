@@ -9,7 +9,7 @@ files  		:= $(afsdir)/files/sqlitejdbc
 
 default: dist/$(sqlitejdbc).jar
 
-dist/$(sqlitejdbc).jar: $(sqlitejdbc)-native.jar build/mac-universal.lib
+dist/$(sqlitejdbc).jar: $(sqlitejdbc)-native.jar build/mac-universal.lib build/win-x86.lib build/linux-x86.lib build/linux-amd64.lib
 	(cd build; jar uf $(sqlitejdbc)-native.jar *.lib)
 	cp build/$(sqlitejdbc)-native.jar $@
 	rm build/$(sqlitejdbc)-native.jar
